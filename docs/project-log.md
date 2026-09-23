@@ -27,6 +27,16 @@
 - Sensor readings update every 1000 ms.
 - Display refreshes independently every 250 ms.
 
+### I2C Fault Detection and Recovery
+- Added independent I2C presence checks for the BME280 at `0x76` and the OLED at `0x3C` every 1000 ms.
+- Tracked connection and initialization state separately for each device.
+- When a device stops responding, its connection and initialization states are cleared and a single disconnection message is sent to Serial.
+- When the BME280 is unavailable, the working OLED displays `SENSOR FAILED` instead of stale readings.
+- When a device responds again, the firmware reports the reconnection, retries initialization, and resumes normal operation after initialization succeeds.
+- OLED configuration is restored after the display reconnects and is reinitialized.
+- Tested the recovery paths by disconnecting and reconnecting each device's SDA jumper separately while the system was running.
+- Confirmed successful BME280 and OLED fault detection, reinitialization, and recovery without restarting the ESP32.
+
 ### Fan Driver Experiment
 - Built a 5 V fan driver using:
   - S8050 NPN transistor
